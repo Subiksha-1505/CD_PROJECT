@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Live Quiz</title>
+    <link rel="stylesheet" href="quiz.css">
+</head>
+<body>
+
+<div class="quiz-container">
+    <h2 id="quizTitle"></h2>
+    <p id="timer">Time Left: 15s</p>
+
+    <div class="question-box">
+        <p id="question"></p>
+
+        <div class="options">
+            <button onclick="selectAnswer(0)">A</button>
+            <button onclick="selectAnswer(1)">B</button>
+            <button onclick="selectAnswer(2)">C</button>
+            <button onclick="selectAnswer(3)">D</button>
+        </div>
+    </div>
+</div>
+
+<div class="typing-box">
+    <label>Type your answer (for analysis)</label>
+    <input type="text" id="typingInput" placeholder="Start typing here...">
+</div>
+
+<script src="quiz.js"></script>
+</body>
+</html>

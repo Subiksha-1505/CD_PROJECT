@@ -1,0 +1,21 @@
+<form onsubmit="loginUser(event)">
+
+    <label>Login as</label>
+    <select id="role" required>
+        <option value="">Select Role</option>
+        <option value="student">Student</option>
+        <option value="teacher">Teacher</option>
+    </select>
+
+    <label>Username</label>
+    <input type="text" id="username" placeholder="Enter your username" required>
+
+    <label>Password</label>
+    <input type="password" id="password" placeholder="Enter your password" required>
+
+    <button type="submit">LOGIN</button>
+
+    <p class="forgot">Forgot your password?</p>
+</form>
+
+<script src="login.js"></script>
