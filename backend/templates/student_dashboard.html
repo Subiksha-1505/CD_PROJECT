@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Student Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+</head>
+<body>
+
+<div class="container">
+  <div class="card">
+    <h2>Select Class & Subject</h2>
+
+    <select id="class">
+      <option>4th</option>
+      <option>5th</option>
+      <option>6th</option>
+      <option>7th</option>
+      <option>8th</option>
+      <option>9th</option>
+      <option>10th</option>
+      <option>11th</option>
+      <option>12th</option>
+    </select>
+
+    <select id="subject">
+      <option>Mathematics</option>
+      <option>English</option>
+      <option>Computer</option>
+      <option>Science</option>
+    </select>
+
+    <button onclick="startQuiz()">START QUIZ</button>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/student_dashboard.js') }}"></script>
+</body>
+</html>

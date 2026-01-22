@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Teacher Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/teacher_dashboard.css') }}">
+</head>
+<body>
+
+<div class="dashboard">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h2>Student Performance</h2>
+    <input type="text" placeholder="Search student..." />
+  </div>
+
+  <!-- TABLE CARD -->
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Score</th>
+          <th>Accuracy</th>
+          <th>Time Taken</th>
+          <th>Class</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr>
+          <td>Daisy Scott</td>
+          <td>92</td>
+          <td>95%</td>
+          <td>18 min</td>
+          <td>10</td>
+          <td class="pass">Pass</td>
+        </tr>
+
+        <tr>
+          <td>Isabel Harris</td>
+          <td>76</td>
+          <td>80%</td>
+          <td>25 min</td>
+          <td>12</td>
+          <td class="pass">Pass</td>
+        </tr>
+
+        <tr>
+          <td>Dan Thomas</td>
+          <td>45</td>
+          <td>50%</td>
+          <td>30 min</td>
+          <td>11</td>
+          <td class="fail">Fail</td>
+        </tr>
+
+        <tr>
+          <td>Vera Cooper</td>
+          <td>88</td>
+          <td>90%</td>
+          <td>20 min</td>
+          <td>10</td>
+          <td class="pass">Pass</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+</body>
+</html>

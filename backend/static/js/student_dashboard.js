@@ -12,5 +12,8 @@ function startClass() {
     localStorage.setItem("subject", selectedSubject);
 
     // Redirect to quiz page
-    window.location.href = "quiz.html";
+    function startQuiz() {
+    window.location.href = "/quiz";
+}
+
 }
