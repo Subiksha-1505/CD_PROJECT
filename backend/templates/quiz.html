@@ -1,41 +1,255 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Live Quiz</title>
-    <link rel="stylesheet" href="quiz.css">
+    <style>
+    body {
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(135deg, #dbeafe, #e0f2fe);
+        font-family: "Segoe UI", Arial, sans-serif;
+        color: white;
+    }
+
+    .quiz-container {
+        max-width: 800px;
+        margin: 40px auto;
+        background: #320886;
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .quiz-header {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    .quiz-header h2 {
+        margin: 0;
+        font-size: 28px;
+        letter-spacing: 1px;
+    }
+
+    .quiz-header p {
+        opacity: 0.9;
+        font-size: 14px;
+    }
+
+    .question-card {
+        background: #5e23c6;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+    }
+
+    .question-number {
+        display: inline-block;
+        background: white;
+        color: #1e3a8a;
+        font-weight: bold;
+        padding: 6px 12px;
+        border-radius: 20px;
+        margin-bottom: 10px;
+        font-size: 14px;
+    }
+
+    .question-text {
+        font-size: 18px;
+        margin: 10px 0 15px;
+    }
+
+    .option {
+        display: block;
+        background: rgba(255, 255, 255, 0.15);
+        padding: 10px 15px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .option:hover {
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+    input[type="radio"] {
+        margin-right: 10px;
+        transform: scale(1.2);
+    }
+
+    .submit-btn {
+        display: block;
+        width: 100%;
+        margin-top: 30px;
+        background: #0e8b2d;
+        color: white;
+        border: none;
+        padding: 14px;
+        font-size: 18px;
+        font-weight: bold;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .submit-btn:hover {
+        background: #16a34a;
+    }
+</style>
+    <title>Quiz</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
 </head>
-<body>
 
+<body class="quiz-bg">
+    <script>
+        const studentClass = "{{ student_class }}";
+        const subject = "{{ subject }}";
+    </script>
+   
 <div class="quiz-container">
-    <h2 id="quizTitle"></h2>
-    <p id="timer">Time Left: 15s</p>
 
-    <div class="question-box">
-        <p id="question"></p>
+    <div class="quiz-header">
+        <h2>Student Quiz</h2>
+        <p>Answer all questions carefully</p>
+    </div>
+    <div id="timer" style="font-weight:bold; font-size:16px; margin-top:10px;">
+        Time Left: 00:00
+    </div>
+    <!-- QUESTIONS WILL LOAD HERE -->
+    <div id="quiz"></div>
+    <button class="submit-btn" onclick="submitQuiz()">Submit Quiz</button>
 
-        <div class="options">
-            <button onclick="selectAnswer(0)">A</button>
-            <button onclick="selectAnswer(1)">B</button>
-            <button onclick="selectAnswer(2)">C</button>
-            <button onclick="selectAnswer(3)">D</button>
+</div>
+<script src="{{ url_for('static', filename='js/quiz.js') }}"></script>
+<script>
+const questions = [
+    {
+        question: "What does AI stand for?",
+        options: ["Artificial Intelligence", "Automated Input", "Advanced Internet", "Applied Innovation"],
+        answer: 0
+    },
+    {
+        question: "Which language is widely used for AI?",
+        options: ["Python", "HTML", "CSS", "SQL"],
+        answer: 0
+    },
+    {
+        question: "What is Machine Learning?",
+        options: ["Subset of AI", "Programming language", "Database", "Operating System"],
+        answer: 0
+    },
+    {
+        question: "Which is an AI application?",
+        options: ["Face Recognition", "Calculator", "Notepad", "MS Paint"],
+        answer: 0
+    },
+    {
+        question: "What does NLP stand for?",
+        options: ["Natural Language Processing", "Neural Logic Program", "Network Learning Process", "None"],
+        answer: 0
+    }
+];
+
+const quizDiv = document.getElementById("quiz");
+
+// Render questions
+questions.forEach((q, index) => {
+    quizDiv.innerHTML += `
+        <div class="question-card">
+            <span class="question-number">Question ${index + 1}</span>
+            <div class="question-text">${q.question}</div>
+
+            ${q.options.map((opt, i) => `
+                <label class="option">
+                    <input type="radio" name="q${index}" value="${i}">
+                    ${opt}
+                </label>
+            `).join("")}
         </div>
-    </div>
-    
-    <div id="resultBox" style="display:none;">
-        <h3>Quiz Completed</h3>
-        <p id="scoreText"></p>
-        <p id="mouseText"></p>
-        <p id="typingText"></p>
-    </div>
+    `;
+});
 
-</div>
+// Timer
+let time = 60;
+const timerElement = document.getElementById("timer");
 
-<div class="typing-box">
-    <label>Type your answer (for analysis)</label>
-    <input type="text" id="typingInput" placeholder="Start typing here...">
-</div>
+const timer = setInterval(() => {
+    timerElement.innerText = time + "s";
+    time--;
+    if (time < 0) {
+        clearInterval(timer);
+        submitQuiz();
+    }
+}, 1000);
 
-<script src="quiz.js"></script>
+// Submit & score
+document.getElementById("quizForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    submitQuiz();
+});
+
+function submitQuiz() {
+    let score = 0;
+    let correct = 0;
+    let wrong = 0;
+    let unanswered = 0;
+
+    questions.forEach((q, index) => {
+        const selected = document.querySelector(`input[name="q${index}"]:checked`);
+
+        if (!selected) {
+            unanswered++;
+        } else if (parseInt(selected.value) === q.answer) {
+            score++;
+            correct++;
+        } else {
+            wrong++;
+        }
+    });
+
+    // Replace quiz with result
+    document.querySelector(".quiz-container").innerHTML = `
+        <div class="quiz-header">
+            <h2>Quiz Result</h2>
+            <p>Your Performance Summary</p>
+        </div>
+
+        <div class="question-card">
+            <p><strong>Total Questions:</strong> ${questions.length}</p>
+            <p><strong>Correct Answers:</strong> ${correct}</p>
+            <p><strong>Wrong Answers:</strong> ${wrong}</p>
+            <p><strong>Unanswered:</strong> ${unanswered}</p>
+            <p style="font-size:20px; margin-top:15px;">
+                <strong>Your Score:</strong> ${score} / ${questions.length}
+            </p>
+        </div>
+
+        <button class="submit-btn" onclick="location.reload()">Retry Quiz</button>
+    `;
+}
+</script>
+<script>
+let totalTime = 1 * 60; // 10 minutes
+
+function startTimer() {
+    const timerEl = document.getElementById("timer");
+
+    const interval = setInterval(() => {
+        let minutes = Math.floor(totalTime / 60);
+        let seconds = totalTime % 60;
+
+        timerEl.innerText = `Time Left: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        totalTime--;
+
+        if (totalTime < 0) {
+            clearInterval(interval);
+            alert("Time is up! Submitting quiz ⏰");
+            submitQuiz();
+        }
+    }, 1000);
+}
+
+startTimer();
+</script>
 </body>
 </html>

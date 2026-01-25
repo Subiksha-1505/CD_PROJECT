@@ -17,3 +17,10 @@ function startClass() {
 }
 
 }
+function startQuiz() {
+    const cls = document.getElementById("class").value;
+    const subject = document.getElementById("subject").value;
+
+    // pass data to quiz page
+    window.location.href = `/quiz?class=${cls}&subject=${subject}`;
+}

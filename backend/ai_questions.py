@@ -1,31 +1,54 @@
+# ai_questions.py
+import random
 from flask import Blueprint, request, jsonify
-import openai
-import json
 
 ai_bp = Blueprint("ai", __name__)
 
-openai.api_key = "YOUR_API_KEY"
+# Question generator (AI-like logic)
+def generate_quiz(class_name, subject):
+    subject_topics = {
+        "Math": ["addition", "subtraction", "multiplication", "fractions", "algebra"],
+        "English": ["grammar", "vocabulary", "synonyms", "comprehension"],
+        "Science": ["plants", "animals", "energy", "matter"],
+        "Computer": ["hardware", "software", "internet", "programming"]
+    }
 
+    topics = subject_topics.get(subject, ["basics"])
+    difficulty = int(class_name) if class_name.isdigit() else 5
+
+    questions = []
+
+    for i in range(10):  # 10 questions
+        topic = random.choice(topics)
+
+        questions.append({
+            "id": i + 1,
+            "question": f"Class {class_name} {subject}: Question on {topic}",
+            "options": [
+                f"{topic} option A",
+                f"{topic} option B",
+                f"{topic} option C",
+                f"{topic} option D"
+            ],
+            "answer": random.randint(0, 3),  # correct option index
+            "marks": 1
+        })
+
+    return questions
+
+
+# API route
 @ai_bp.route("/generate-quiz", methods=["POST"])
-def generate_quiz():
+def generate_quiz_api():
     data = request.json
-    class_level = data["class"]
-    subject = data["subject"]
+    class_name = data.get("class")
+    subject = data.get("subject")
 
-    prompt = f"""
-    Generate 10-15 quiz questions for:
-    Class: {class_level}
-    Subject: {subject}
+    questions = generate_quiz(class_name, subject)
 
-    Mix MCQs and fill in the blanks.
-    Difficulty must match the class.
-    Return JSON only.
-    """
-
-    response = openai.ChatCompletion.create(
-        model="gpt-4",
-        messages=[{"role": "user", "content": prompt}]
-    )
-
-    questions = json.loads(response.choices[0].message["content"])
-    return jsonify(questions)
+    return jsonify({
+        "class": class_name,
+        "subject": subject,
+        "total_questions": len(questions),
+        "questions": questions
+    })
