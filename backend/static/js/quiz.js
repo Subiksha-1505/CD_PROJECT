@@ -15,18 +15,6 @@ fetch("http://127.0.0.1:5000/generate-quiz", {
 })
 .catch(err => console.error(err));
 
-// ======== Fatigue data ===========
-const fatigueData = {
-  quizStartTime: Date.now(),
-  answerTimes: [],
-  mouseMoves: 0
-};
-
-// =============  Mouse tracking (STEP 3) ===============
-document.addEventListener("mousemove", () => {
-  fatigueData.mouseMoves++;
-});
-
 // ================= QUESTIONS =================
 const questions = [
     {
@@ -56,6 +44,18 @@ const questions = [
     }
 ];
 
+// ================= FATIGUE DATA =================
+const fatigueData = {
+    startTime: Date.now(),
+    answerTimes: [],
+    mouseMoves: 0
+};
+
+// Mouse movement tracking
+document.addEventListener("mousemove", () => {
+    fatigueData.mouseMoves++;
+});
+
 // ============= Render quiz ==================
 function renderQuiz(questions) {
   const container = document.getElementById("quiz-container");
@@ -82,20 +82,18 @@ function renderQuiz(questions) {
       </div>
     `;
   });
-}
 
-// 5️⃣ Radio timing (STEP 4)
-function setupFatigueTracking() {
+// Track answer timing
   document.querySelectorAll("input[type='radio']").forEach(radio => {
-    radio.addEventListener("change", () => {
-      fatigueData.answerTimes.push(
-        (Date.now() - fatigueData.quizStartTime) / 1000
-      );
-    });
+      radio.addEventListener("change", () => {
+          fatigueData.answerTimes.push(
+              (Date.now() - fatigueData.startTime) / 1000
+          );
+      });
   });
 }
 
-// 6️⃣ Fatigue analysis
+// ========== Fatigue analysis =============
 function analyzeFatigue(score, total) {
   const mouse = fatigueData.mouseMoves;
   const answers = fatigueData.answerTimes.length;
@@ -123,36 +121,24 @@ function analyzeFatigue(score, total) {
   return "⚠️ Try again with better concentration.";
 }
 
-// 7️⃣ Submit quiz (ONLY ONCE)
+// ================= SUBMIT =================
 function submitQuiz() {
-  let score = 0;
-  alert("Submit clicked ✅");
-  questions.forEach((q, index) => {
-    const selected = document.querySelector(`input[name="q${index}"]:checked`);
-    if (selected && parseInt(selected.value) === q.answer) {
-      score++;
-    }
-  });
+    let score = 0;
 
-  const fatigueMessage = analyzeFatigue(score, questions.length);
+    questions.forEach((q, index) => {
+        const selected = document.querySelector(`input[name="q${index}"]:checked`);
+        if (selected && parseInt(selected.value) === q.answer) {
+            score++;
+        }
+    });
 
-  document.querySelector(".quiz-container").innerHTML = `
-    <h2>Result</h2>
-    <p><b>Your Score:</b> ${score} / ${questions.length}</p>
+    const totalTime = (Date.now() - fatigueData.startTime) / 1000;
+    const fatigueMessage = analyzeFatigue(score, questions.length);
 
-    <div style="
-      margin-top:15px;
-      padding:15px;
-      border-radius:8px;
-      background:#eef2ff;
-      border-left:5px solid #4f46e5;
-    ">
-      <h3>Fatigue Status</h3>
-      <p>${fatigueMessage}</p>
-    </div>
+    document.getElementById("fatigueResult").innerText = fatigueMessage;
 
-    <button class="submit-btn" onclick="location.reload()">Retry</button>
-  `;
-  window.addEventListener("DOMContentLoaded", renderQuiz);
-
+    alert(`Your Score: ${score}/${questions.length}`);
 }
+
+// ================= LOAD =================
+window.addEventListener("DOMContentLoaded", renderQuiz);
