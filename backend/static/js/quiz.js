@@ -1,5 +1,5 @@
 // 1️⃣ Fetch quiz
-fetch("http://127.0.0.1:5000/generate-quiz", {
+/***fetch("http://127.0.0.1:5000/generate-quiz", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
@@ -14,7 +14,7 @@ fetch("http://127.0.0.1:5000/generate-quiz", {
   setupFatigueTracking();         // ✅ start tracking AFTER render
 })
 .catch(err => console.error(err));
-
+***/
 // ================= QUESTIONS =================
 const questions = [
     {
@@ -47,78 +47,65 @@ const questions = [
 // ================= FATIGUE DATA =================
 const fatigueData = {
     startTime: Date.now(),
-    answerTimes: [],
-    mouseMoves: 0
+    answered : new Set() };
+    /** answerTimes: [],
+    mouseMoves: 0 
 };
 
 // Mouse movement tracking
 document.addEventListener("mousemove", () => {
     fatigueData.mouseMoves++;
-});
+}); **/
 
 // ============= Render quiz ==================
-function renderQuiz(questions) {
+function renderQuiz() {
   const container = document.getElementById("quiz-container");
   
-  if (!container) {
+  /** if (!container) {
     console.error("quiz-container not found");
     return;
-}
+  }**/
 
   container.innerHTML = "";
 
   questions.forEach((q, index) => {
     container.innerHTML += `
-      <div class="question">
+      <div class="question-card">
         <p><b>Q${index + 1}.</b> ${q.question}</p>
         <div class="options">
           ${q.options.map((opt, i) => `
             <label>
               <input type="radio" name="q${index}" value="${i}">
               ${opt}
-            </label>
+            </label><br>
           `).join("")}
         </div>
-      </div>
+      </div><br>
     `;
   });
 
 // Track answer timing
   document.querySelectorAll("input[type='radio']").forEach(radio => {
       radio.addEventListener("change", () => {
-          fatigueData.answerTimes.push(
-              (Date.now() - fatigueData.startTime) / 1000
-          );
+          fatigueData.answered.add(radio.name);
       });
   });
 }
 
 // ========== Fatigue analysis =============
-function analyzeFatigue(score, total) {
-  const mouse = fatigueData.mouseMoves;
-  const answers = fatigueData.answerTimes.length;
-
-  if (mouse === 0 && answers === 0) {
-    return "⚠️ Not enough activity to detect fatigue.";
+function analyzeFatigue(totalTime, answeredCount) {
+  if (answeredCount === 0) {
+    return "⚠️ No answers detected. Fatigue cannot be measured.";
   }
+  const avgTime = totalTime / answeredCount;
 
-  const avgSpeed = answers > 0
-    ? fatigueData.answerTimes[answers - 1] / answers
-    : 0;
-
-  if (score < total / 2 && mouse < 80) {
-    return "😴 You seem tired. Take a short break.";
+  if (avgTime > 15) {
+    return `😴 You seem tired. Avg time: ${avgTime.toFixed(1)}s`;
+  } else if (avgTime > 8) {
+    return `😐 Slight fatigue detected. Avg time: ${avgTime.toFixed(1)}s`;
+  } else {
+    return `💪 Active & focused! Avg time: ${avgTime.toFixed(1)}s`;
   }
-
-  if (score < total / 2 && avgSpeed > 4) {
-    return "📘 You need more practice. Slow down.";
-  }
-
-  if (score >= total / 2 && mouse > 80) {
-    return "👍 Good focus! Keep it up.";
-  }
-
-  return "⚠️ Try again with better concentration.";
 }
 
 // ================= SUBMIT =================
@@ -127,18 +114,22 @@ function submitQuiz() {
 
     questions.forEach((q, index) => {
         const selected = document.querySelector(`input[name="q${index}"]:checked`);
-        if (selected && parseInt(selected.value) === q.answer) {
+        if (selected && Number(selected.value) === q.answer) {
             score++;
         }
     });
 
     const totalTime = (Date.now() - fatigueData.startTime) / 1000;
-    const fatigueMessage = analyzeFatigue(score, questions.length);
+    const fatigueMsg = analyzeFatigue(
+      totalTime,
+      fatigueData.answeredQuestions.size
+    );
+  
+    // ✅ DISPLAY FATIGUE RESULT
+    document.getElementById("fatigueResult").innerText = fatigueMsg;
 
-    document.getElementById("fatigueResult").innerText = fatigueMessage;
-
-    alert(`Your Score: ${score}/${questions.length}`);
+    alert(`Score: ${score}/${questions.length}`);
 }
 
 // ================= LOAD =================
-window.addEventListener("DOMContentLoaded", renderQuiz);
+window.onload = renderQuiz;

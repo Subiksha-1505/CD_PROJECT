@@ -24,7 +24,7 @@
 </div>
    
 <div class="quiz-container">
-
+    
     <div class="quiz-header">
         <h2>Student Quiz</h2>
         <p>Answer all questions carefully</p>
@@ -60,17 +60,7 @@ questions.forEach((q, index) => {
 });
 
 // Timer
-let time = 60;
 const timerElement = document.getElementById("timer");
-
-const timer = setInterval(() => {
-    timerElement.innerText = time + "s";
-    time--;
-    if (time < 0) {
-        clearInterval(timer);
-        submitQuiz();
-    }
-}, 1000);
 
 function submitQuiz() {
     let score = 0;
@@ -90,6 +80,26 @@ function submitQuiz() {
             wrong++;
         }
     });
+
+    // ✅ FATIGUE CALCULATION
+    const totalTimeTaken = (Date.now() - fatigueData.startTime) / 1000;
+    const answeredCount = correct + wrong;
+
+    let fatigueMsg = "⚠️ Fatigue not detected";
+
+    if (answeredCount > 0) {
+        const avgTime = totalTimeTaken / answeredCount;
+
+        if (avgTime > 15)
+            fatigueMsg = `😴 TIRED (Avg ${avgTime.toFixed(1)}s/question)`;
+        else if (avgTime > 8)
+            fatigueMsg = `😐 SLIGHT FATIGUE (Avg ${avgTime.toFixed(1)}s/question)`;
+        else
+            fatigueMsg = `💪 ACTIVE & FOCUSED (Avg ${avgTime.toFixed(1)}s/question)`;
+    }
+
+    // ✅ SHOW FATIGUE
+    document.getElementById("fatigueResult").innerText = fatigueMsg;
 
     // Replace quiz with result
     document.querySelector(".quiz-container").innerHTML = `
