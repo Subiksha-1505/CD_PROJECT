@@ -1,103 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <style>
-    body {
-        margin: 0;
-        padding: 0;
-        background: linear-gradient(135deg, #dbeafe, #e0f2fe);
-        font-family: "Segoe UI", Arial, sans-serif;
-        color: white;
-    }
-
-    .quiz-container {
-        max-width: 800px;
-        margin: 40px auto;
-        background: #320886;
-        padding: 30px;
-        border-radius: 16px;
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-    }
-
-    .quiz-header {
-        text-align: center;
-        margin-bottom: 25px;
-    }
-
-    .quiz-header h2 {
-        margin: 0;
-        font-size: 28px;
-        letter-spacing: 1px;
-    }
-
-    .quiz-header p {
-        opacity: 0.9;
-        font-size: 14px;
-    }
-
-    .question-card {
-        background: #5e23c6;
-        padding: 20px;
-        border-radius: 12px;
-        margin-bottom: 20px;
-    }
-
-    .question-number {
-        display: inline-block;
-        background: white;
-        color: #1e3a8a;
-        font-weight: bold;
-        padding: 6px 12px;
-        border-radius: 20px;
-        margin-bottom: 10px;
-        font-size: 14px;
-    }
-
-    .question-text {
-        font-size: 18px;
-        margin: 10px 0 15px;
-    }
-
-    .option {
-        display: block;
-        background: rgba(255, 255, 255, 0.15);
-        padding: 10px 15px;
-        border-radius: 8px;
-        margin-bottom: 10px;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-
-    .option:hover {
-        background: rgba(255, 255, 255, 0.3);
-    }
-
-    input[type="radio"] {
-        margin-right: 10px;
-        transform: scale(1.2);
-    }
-
-    .submit-btn {
-        display: block;
-        width: 100%;
-        margin-top: 30px;
-        background: #0e8b2d;
-        color: white;
-        border: none;
-        padding: 14px;
-        font-size: 18px;
-        font-weight: bold;
-        border-radius: 10px;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-
-    .submit-btn:hover {
-        background: #16a34a;
-    }
-</style>
     <title>Quiz</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/quiz.css') }}">
 </head>
 
 <body class="quiz-bg">
@@ -122,33 +27,6 @@
 </div>
 <script src="{{ url_for('static', filename='js/quiz.js') }}"></script>
 <script>
-const questions = [
-    {
-        question: "What does AI stand for?",
-        options: ["Artificial Intelligence", "Automated Input", "Advanced Internet", "Applied Innovation"],
-        answer: 0
-    },
-    {
-        question: "Which language is widely used for AI?",
-        options: ["Python", "HTML", "CSS", "SQL"],
-        answer: 0
-    },
-    {
-        question: "What is Machine Learning?",
-        options: ["Subset of AI", "Programming language", "Database", "Operating System"],
-        answer: 0
-    },
-    {
-        question: "Which is an AI application?",
-        options: ["Face Recognition", "Calculator", "Notepad", "MS Paint"],
-        answer: 0
-    },
-    {
-        question: "What does NLP stand for?",
-        options: ["Natural Language Processing", "Neural Logic Program", "Network Learning Process", "None"],
-        answer: 0
-    }
-];
 
 const quizDiv = document.getElementById("quiz");
 
@@ -181,12 +59,6 @@ const timer = setInterval(() => {
         submitQuiz();
     }
 }, 1000);
-
-// Submit & score
-document.getElementById("quizForm").addEventListener("submit", function(e) {
-    e.preventDefault();
-    submitQuiz();
-});
 
 function submitQuiz() {
     let score = 0;
