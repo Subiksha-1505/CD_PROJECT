@@ -16,33 +16,133 @@
 .catch(err => console.error(err));
 ***/
 // ================= QUESTIONS =================
-const questions = [
-    {
-        question: "What does AI stand for?",
-        options: ["Artificial Intelligence", "Automated Input", "Advanced Internet", "Applied Innovation"],
+
+const questionBank = {
+  "4" : {
+    "tamil" : [
+      {
+          question: "உயிரெழுத்துகள் எத்தனை?",
+          options: ["10","12","21","18"],
+          answer: 1
+      },
+      {
+          question: "மெய்யெழுத்துகள் எத்தனை?",
+          options: ["12","18","81","24"],
+          answer: 2
+      },
+      {
+          question: "பெயர்ச்சொல் எது?",
+          options: ["ஓடு", "மரம்", "நட", "படி"],
+          answer: 1
+      },
+      {
+          question: "வினைச்சொல் எது?",
+          options: ["புத்தகம்", "பள்ளி", "ஓடுதல்", "மரம்"],
+          answer: 2
+      },
+      {
+          question: "“நல்ல” என்பதற்கான எதிர்ச்சொல்?",
+          options: ["அழகு", "பெரிய", "கெட்ட", "சிறிய"],
+          answer: 2
+      }
+    ],
+    "english": [
+      {
+        question: "What is a noun?",
+        options: ["A naming word", "An action word", "A describing word", "A joining word"],
         answer: 0
-    },
-    {
-        question: "Which language is widely used for AI?",
-        options: ["Python", "HTML", "CSS", "SQL"],
-        answer: 0
-    },
-    {
-        question: "What is Machine Learning?",
-        options: ["Subset of AI", "Programming language", "Database", "Operating System"],
-        answer: 0
-    },
-    {
-        question: "Which is an AI application?",
-        options: ["Face Recognition", "Calculator", "Notepad", "MS Paint"],
-        answer: 0
-    },
-    {
-        question: "What does NLP stand for?",
-        options: ["Natural Language Processing", "Neural Logic Program", "Network Learning Process", "None"],
-        answer: 0
-    }
-];
+      },
+      {
+        question: "Which is a vowel?",
+        options: ["B", "C", "A", "D"],
+        answer: 2
+      },
+      {
+        question: "What is a verb?",
+        options: ["Name", "Place", "Action", "Thing"],
+        answer: 2
+      },
+      {
+        question: "Plural of 'child' is?",
+        options: ["childs", "childes", "children", "childrens"],
+        answer: 2
+      },
+      {
+        question: "Opposite of 'big'?",
+        options: ["large", "small", "tall", "fat"],
+        answer: 1
+      }
+    ],
+    "math" : [
+      {
+        question: "What is 5 + 3?",
+        options: ["6", "7", "8", "9"],
+        answer: 2
+        },
+        {
+        question: "What is 10 − 4?",
+        options: ["5", "6", "7", "8"],
+        answer: 1
+        },
+        {
+          question: "2 × 4 = ?",
+          options: ["6", "8", "10", "12"],
+          answer: 1
+        },
+        {
+          question: "12 ÷ 3 = ?",
+          options: ["2", "3", "4", "5"],
+          answer: 2
+        },
+        {
+          question: "How many sides does a square have?",
+          options: ["3", "4", "5", "6"],
+          answer: 1
+        }
+      ],
+      "evs" : [
+        {
+          question: "Which is a domestic animal?",
+          options: ["Lion", "Tiger", "Cow", "Elephant"],
+          answer: 2
+        },
+        {
+          question: "Why do we need food?",
+          options: ["To play", "To grow and get energy", "To sleep", "To read"],
+          answer: 1
+        },
+        {
+          question: "Which is a source of water?",
+          options: ["Road", "River", "Chair", "Book"],
+          answer: 1
+        },
+        {
+          question: "Who is a helper?",
+          options: ["Doctor", "Thief", "Robber", "Cheater"],
+          answer: 0
+        },
+        {
+          question: "What do plants need to grow?",
+          options: ["Water", "Plastic", "Stone", "Paper"],
+          answer: 0
+        }
+      ]
+  }
+}
+  
+// ================= SELECT QUESTIONS =================
+const selectedClass = String(studentClass).replace(/[^0-9]/g, "");   // example: "4"
+const selectedSubject = subject.trim().toLowerCase();      // example: "english"
+
+const questions =
+  questionBank[selectedClass]?.[selectedSubject] || [];
+
+console.log("Class:", selectedClass);
+console.log("Subject:", selectedSubject);
+console.log("Questions:", questions);
+if (questions.length === 0) {
+  alert("No questions found for this class & subject");
+}
 
 // ================= FATIGUE DATA =================
 const fatigueData = {
@@ -84,10 +184,10 @@ function renderQuiz() {
     `;
   });
 
-// Track answer timing
+// =========== Track answer timing ===========
   document.querySelectorAll("input[type='radio']").forEach(radio => {
       radio.addEventListener("change", () => {
-          fatigueData.answered.add(radio.name);
+          fatigueData.answered.size(radio.name);
       });
   });
 }
